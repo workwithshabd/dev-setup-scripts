@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -e
+
+BASE_URL="https://raw.githubusercontent.com/workwithshabd/dev-setup-scripts/main/scripts"
+
+run_script() {
+    local script="$1"
+    local cmd="$2"
+
+    echo ""
+    echo "Running $script ${cmd:-"(default)"}"
+    echo ""
+
+    if [[ "$cmd" == "run" || -z "$cmd" ]]; then
+        curl -fsSL "$BASE_URL/$script" | bash
+    else
+        curl -fsSL "$BASE_URL/$script" | bash -s -- "$cmd"
+    fi
+}
+
+select_action() {
+    while true; do
+        echo ""
+        echo "Select action:"
+        echo "1) Run Script (default)"
+        echo "2) Check Environment (-check)"
+        echo "3) Fix Issues (-doctor)"
+        echo "4) Help / Manual (-help)"
+        echo "0) Back"
+        echo ""
+
+        read -p "Enter choice: " action
+
+        case $action in
+            1) run_script "$SCRIPT" "run"; break ;;
+            2) run_script "$SCRIPT" "-check"; break ;;
+            3) run_script "$SCRIPT" "-doctor"; break ;;
+            4) run_script "$SCRIPT" "-help"; break ;;
+            0) return ;;
+            *) echo "Invalid choice" ;;
+        esac
+    done
+}
+
+while true; do
+    echo ""
+    echo "=================================="
+    echo "     Dev Setup Interactive CLI"
+    echo "=================================="
+    echo ""
+    echo "Select tech stack:"
+    echo ""
+    echo "1) Flutter"
+    echo "2) Rust"
+    echo "3) Go"
+    echo "4) C++"
+    echo "5) MERN"
+    echo "6) MySQL"
+    echo "0) Exit"
+    echo ""
+
+    read -p "Enter choice: " choice
+
+    case $choice in
+        1) SCRIPT="flutter-setup"; select_action ;;
+        2) SCRIPT="rust-setup"; select_action ;;
+        3) SCRIPT="go-setup"; select_action ;;
+        4) SCRIPT="cpp-setup"; select_action ;;
+        5)
+            echo ""
+            echo "Running MERN setup..."
+            run_script "mern-setup" "run"
+            ;;
+        6) SCRIPT="mysql-setup"; select_action ;;
+        0) echo "Exiting."; exit 0 ;;
+        *) echo "Invalid option" ;;
+    esac
+done
