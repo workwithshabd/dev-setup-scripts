@@ -1,17 +1,22 @@
 #!/usr/bin/env bash
 set -e
 
+# -------- FIX INPUT (CRITICAL) --------
+# Force all reads to use terminal even in curl | bash
+exec < /dev/tty
+
 # -------- HELP --------
 show_help() {
   echo ""
   echo "MERN Setup CLI"
   echo ""
   echo "Usage:"
-  echo "  mern-setup [project-name]"
+  echo "  mern-setup [project] [mongo_uri] [jwt_secret] [frontend_url]"
   echo ""
   echo "Examples:"
   echo "  mern-setup"
   echo "  mern-setup myapp"
+  echo "  mern-setup myapp mongodb://localhost:27017 dbsecret http://localhost:3000"
   echo ""
 }
 
@@ -22,28 +27,41 @@ fi
 
 echo ""
 echo "==========================================="
-echo "        MERN Setup Interactive Mode"
+echo "        MERN Setup"
 echo "==========================================="
 echo ""
 
-# -------- PROJECT NAME --------
-if [[ -n "${1:-}" && "$1" != -* ]]; then
-  APP_NAME="$1"
-else
-  read -p "Project name (default: mern-app): " INPUT_NAME < /dev/tty
+# -------- INPUT HANDLING --------
+
+# CLI args take priority
+APP_NAME=${1:-}
+MONGO_URI=${2:-}
+JWT_SECRET=${3:-}
+FRONTEND_URL=${4:-}
+
+# -------- INTERACTIVE FALLBACK --------
+
+if [[ -z "$APP_NAME" ]]; then
+  read -p "Project name (default: mern-app): " INPUT_NAME
   APP_NAME=${INPUT_NAME:-mern-app}
 fi
 
-# -------- INPUTS --------
-read -p "MongoDB URI (leave blank to fill later): " MONGO_INPUT < /dev/tty
-MONGO_URI=${MONGO_INPUT:-your_mongodb_connection_string_here}
+if [[ -z "$MONGO_URI" ]]; then
+  read -p "MongoDB URI (leave blank to fill later): " INPUT
+  MONGO_URI=${INPUT:-your_mongodb_connection_string_here}
+fi
 
-read -p "JWT Secret (default: devsecret): " JWT_INPUT < /dev/tty
-JWT_SECRET=${JWT_INPUT:-devsecret}
+if [[ -z "$JWT_SECRET" ]]; then
+  read -p "JWT Secret (default: devsecret): " INPUT
+  JWT_SECRET=${INPUT:-devsecret}
+fi
 
-read -p "Frontend URL (default: http://localhost:5173): " FRONTEND_INPUT < /dev/tty
-FRONTEND_URL=${FRONTEND_INPUT:-http://localhost:5173}
+if [[ -z "$FRONTEND_URL" ]]; then
+  read -p "Frontend URL (default: http://localhost:5173): " INPUT
+  FRONTEND_URL=${INPUT:-http://localhost:5173}
+fi
 
+# -------- CONFIRM --------
 echo ""
 echo "-------------------------------------------"
 echo "Confirm Setup:"
@@ -52,7 +70,7 @@ echo "Mongo URI: $MONGO_URI"
 echo "Frontend URL: $FRONTEND_URL"
 echo "-------------------------------------------"
 
-read -p "Continue? (y/n): " CONFIRM < /dev/tty
+read -p "Continue? (y/n): " CONFIRM
 if [[ "$CONFIRM" != "y" && "$CONFIRM" != "Y" ]]; then
   echo "Setup cancelled."
   exit 0
