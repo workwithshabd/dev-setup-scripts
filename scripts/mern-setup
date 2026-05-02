@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# -------- FIX INPUT (CRITICAL) --------
-# Force all reads to use terminal even in curl | bash
-exec < /dev/tty
-
 # -------- HELP --------
 show_help() {
   echo ""
@@ -16,7 +12,7 @@ show_help() {
   echo "Examples:"
   echo "  mern-setup"
   echo "  mern-setup myapp"
-  echo "  mern-setup myapp mongodb://localhost:27017 dbsecret http://localhost:3000"
+  echo "  mern-setup myapp mongodb://localhost:27017 devsecret http://localhost:3000"
   echo ""
 }
 
@@ -31,9 +27,7 @@ echo "        MERN Setup"
 echo "==========================================="
 echo ""
 
-# -------- INPUT HANDLING --------
-
-# CLI args take priority
+# -------- INPUT (CLI PRIORITY) --------
 APP_NAME=${1:-}
 MONGO_URI=${2:-}
 JWT_SECRET=${3:-}
@@ -42,22 +36,22 @@ FRONTEND_URL=${4:-}
 # -------- INTERACTIVE FALLBACK --------
 
 if [[ -z "$APP_NAME" ]]; then
-  read -p "Project name (default: mern-app): " INPUT_NAME
-  APP_NAME=${INPUT_NAME:-mern-app}
+  read -p "Project name (default: mern-app): " INPUT < /dev/tty
+  APP_NAME=${INPUT:-mern-app}
 fi
 
 if [[ -z "$MONGO_URI" ]]; then
-  read -p "MongoDB URI (leave blank to fill later): " INPUT
+  read -p "MongoDB URI (leave blank to fill later): " INPUT < /dev/tty
   MONGO_URI=${INPUT:-your_mongodb_connection_string_here}
 fi
 
 if [[ -z "$JWT_SECRET" ]]; then
-  read -p "JWT Secret (default: devsecret): " INPUT
+  read -p "JWT Secret (default: devsecret): " INPUT < /dev/tty
   JWT_SECRET=${INPUT:-devsecret}
 fi
 
 if [[ -z "$FRONTEND_URL" ]]; then
-  read -p "Frontend URL (default: http://localhost:5173): " INPUT
+  read -p "Frontend URL (default: http://localhost:5173): " INPUT < /dev/tty
   FRONTEND_URL=${INPUT:-http://localhost:5173}
 fi
 
@@ -70,7 +64,7 @@ echo "Mongo URI: $MONGO_URI"
 echo "Frontend URL: $FRONTEND_URL"
 echo "-------------------------------------------"
 
-read -p "Continue? (y/n): " CONFIRM
+read -p "Continue? (y/n): " CONFIRM < /dev/tty
 if [[ "$CONFIRM" != "y" && "$CONFIRM" != "Y" ]]; then
   echo "Setup cancelled."
   exit 0
@@ -249,19 +243,15 @@ echo ""
 
 echo "Project: $APP_NAME"
 echo ""
-
 echo "Run backend:"
 echo "  cd $APP_NAME/backend && npm run dev"
 echo ""
-
 echo "Run frontend:"
 echo "  cd $APP_NAME/frontend && npm run dev"
 echo ""
-
 echo "Frontend: http://localhost:5173"
 echo "Backend API: http://localhost:5000/api"
 echo ""
-
 echo "⚠️ Add your MongoDB URI in backend/.env"
 echo ""
 echo "🚀 Ready to build!"
