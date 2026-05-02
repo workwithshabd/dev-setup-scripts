@@ -29,7 +29,7 @@ select_action() {
         echo "0) Back"
         echo ""
 
-        read -p "Enter choice: " action
+        read -p "Enter choice: " action < /dev/tty
 
         case $action in
             1) run_script "$SCRIPT" "run"; break ;;
@@ -59,7 +59,7 @@ while true; do
     echo "0) Exit"
     echo ""
 
-    read -p "Enter choice: " choice
+    read -p "Enter choice: " choice < /dev/tty
 
     case $choice in
         1) SCRIPT="flutter-setup"; select_action ;;
