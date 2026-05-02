@@ -133,44 +133,28 @@ fi
 cd frontend
 
 npm install >/dev/null
-npm install -D tailwindcss postcss autoprefixer >/dev/null
 
-# -------- TAILWIND (NO CLI) --------
-echo "Setting up Tailwind (manual config)..."
-
-cat <<EOF > tailwind.config.js
-export default {
-  content: ["./index.html","./src/**/*.{js,jsx}"],
-  theme: { extend: {} },
-  plugins: [],
-}
-EOF
-
-cat <<EOF > postcss.config.js
-export default {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  },
-}
-EOF
-
-cat <<EOF > src/index.css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-EOF
-
+# Basic React starter
 cat <<EOF > src/App.jsx
-export default function App(){
+import { useEffect, useState } from "react";
+
+function App() {
+  const [msg, setMsg] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api")
+      .then(res => res.json())
+      .then(data => setMsg(data.message));
+  }, []);
+
   return (
-    <div className="h-screen flex items-center justify-center">
-      <h1 className="text-3xl font-bold text-blue-600">
-        MERN Ready 🚀
-      </h1>
+    <div style={{display:"flex",height:"100vh",alignItems:"center",justifyContent:"center"}}>
+      <h1>{msg || "Loading..."}</h1>
     </div>
-  )
+  );
 }
+
+export default App;
 EOF
 
 cd ..
@@ -191,4 +175,4 @@ echo "Backend:  http://localhost:5000/api"
 echo ""
 echo "⚠️ Update MongoDB URI in backend/.env"
 echo ""
-echo "🚀 Ready to build!"q
+echo "🚀 Ready to build!"
