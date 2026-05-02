@@ -1,40 +1,34 @@
+
+# Project Title
+
+A brief description of what this project does and who it's for
+
+
+## 🔗 Links
+[![portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://katherineoelsner.com/)
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/)
+[![twitter](https://img.shields.io/badge/twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/)
+
 # 🚀 Dev Setup Scripts
 
 Automated scripts to set up development environments on macOS.
 
-Supports:
+---
 
-- Flutter
-- Rust
-- Go
-- C++
-- MERN Stack
-- MySQL
+## ⚡ One-Click Setup
 
 ---
 
-## ⚡ One-Click Setup (Recommended)
-
-Run any setup directly without cloning the repository.
-
----
-
-## 🟦 Flutter Setup
+## 🟦 Flutter
 
 ```bash
-curl -O https://raw.githubusercontent.com/workwithshabd/dev-setup-scripts/main/scripts/flutter-setup
-chmod +x flutter-setup
-./flutter-setup -all
+curl -O https://raw.githubusercontent.com/workwithshabd/dev-setup-scripts/main/scripts/flutter.sh
+chmod +x flutter.sh
+./flutter.sh -all
 
+## 🟦 Flutter
 
-🦀 Rust Setup
-
-curl -O https://raw.githubusercontent.com/workwithshabd/dev-setup-scripts/main/scripts/rust-setup
-chmod +x rust-setup
-./rust-setup -all
-
-🟨 Go Setup
-
-curl -O https://raw.githubusercontent.com/workwithshabd/dev-setup-scripts/main/scripts/go-setup
-chmod +x go-setup
-./go-setup -all
+```bash
+curl -O https://raw.githubusercontent.com/workwithshabd/dev-setup-scripts/main/scripts/flutter.sh
+chmod +x flutter.sh
+./flutter.sh -all
