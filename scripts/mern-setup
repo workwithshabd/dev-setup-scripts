@@ -27,7 +27,19 @@ echo "        MERN Setup"
 echo "==========================================="
 echo ""
 
-# -------- INPUT (CLI PRIORITY) --------
+# -------- DEPENDENCY CHECK --------
+if ! command -v node >/dev/null 2>&1; then
+  echo "❌ Node.js is not installed."
+  echo "Install Node.js and re-run."
+  exit 1
+fi
+
+if ! command -v npm >/dev/null 2>&1; then
+  echo "❌ npm is not installed."
+  exit 1
+fi
+
+# -------- INPUT --------
 APP_NAME=${1:-}
 MONGO_URI=${2:-}
 JWT_SECRET=${3:-}
@@ -81,9 +93,9 @@ echo "Setting up backend..."
 mkdir backend
 cd backend
 
-npm init -y
-npm install express mongoose cors dotenv
-npm install nodemon --save-dev
+npm init -y >/dev/null
+npm install express mongoose cors dotenv >/dev/null
+npm install nodemon --save-dev >/dev/null
 
 node -e "
 let pkg=require('./package.json');
@@ -184,13 +196,19 @@ cd ..
 # FRONTEND
 # =========================
 echo "Setting up frontend..."
-npm create vite@latest frontend -- --template react
+npm create vite@latest frontend -- --template react >/dev/null
 cd frontend
 
-npm install
+npm install >/dev/null
+npm install -D tailwindcss postcss autoprefixer >/dev/null
 
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+# Fix: avoid npx bug
+if [ -f "./node_modules/.bin/tailwindcss" ]; then
+  ./node_modules/.bin/tailwindcss init -p
+else
+  echo "❌ Tailwind CLI not found"
+  exit 1
+fi
 
 cat <<EOF > tailwind.config.js
 export default {
@@ -252,6 +270,6 @@ echo ""
 echo "Frontend: http://localhost:5173"
 echo "Backend API: http://localhost:5000/api"
 echo ""
-echo "⚠️ Add your MongoDB URI in backend/.env"
+echo "⚠️ Update MongoDB URI in backend/.env"
 echo ""
 echo "🚀 Ready to build!"
